@@ -9,17 +9,20 @@ INNER JOIN employee_skills ON employee.e_id = employee_skills.e_id
 INNER JOIN skills ON employee_skills.s_id = skills.s_id;
 SELECT * FROM view_emp_skill;
 
--- View for listing projects and their roles
-CREATE OR REPLACE VIEW view_project_role AS
-SELECT project.p_id AS Project_ID, 
+-- View for listing projects and their roles as well as customer
+CREATE OR REPLACE VIEW view_project_info AS
+SELECT customer.c_name AS Customer_name,
+    project.p_id AS Project_ID, 
     project.project_name AS Project_name, 
-    project_role.prole_start_date AS Project_start_date
+    project.budget AS Project_budget,
+    project.p_start_date AS Project_start_date,
+    project.p_end_date AS Project_end_date
 FROM project
-INNER JOIN project_role ON project.p_id = project_role.p_id
+INNER JOIN customer ON project.c_id = customer.c_id
 ORDER BY project.p_id;
-SELECT * FROM view_project_role;
+SELECT * FROM view_project_info;
 
--- View for listing an employees contract info, its job title
+-- View for listing an employees contract info and job title
 CREATE OR REPLACE VIEW view_job_info AS
 SELECT employee.emp_name, 
     employee.contract_start AS Employee_contract_start,
@@ -52,3 +55,20 @@ INNER JOIN employee_user_group ON employee.e_id = employee_user_group.e_id
 INNER JOIN user_group ON employee_user_group.u_id = user_group.u_id
 ORDER BY employee.emp_name;
 SELECT * FROM view_emp_usergroup;
+
+-- View for employees basic info
+CREATE OR REPLACE VIEW view_emp_info AS
+SELECT employee.e_id AS id,
+    employee.emp_name AS Employee_name,
+    employee.email AS email,
+    job_title.title AS title,
+    project.project_name AS project,
+    department.dep_name AS department_name
+FROM employee
+INNER JOIN job_title ON employee.j_id = job_title.j_id
+INNER JOIN project_role ON employee.e_id = project_role.e_id
+INNER JOIN project ON project_role.p_id = project.p_id
+INNER JOIN department ON employee.d_id = department.d_id
+ORDER BY employee.e_id;
+SELECT * FROM view_emp_info; 
+    
