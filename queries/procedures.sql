@@ -43,10 +43,10 @@ AS $$
 DECLARE old_salary INTEGER;
 BEGIN
 SELECT salary INTO old_salary FROM employee; 
- UPDATE employee
+    UPDATE employee
     SET salary = old_salary + (SELECT SUM(salary_benefit_value) FROM skills 
-                WHERE s_id IN (SELECT s_id FROM employee_skills
-                                WHERE e_id = employee.e_id))
+                                WHERE s_id IN (SELECT s_id FROM employee_skills 
+                                                WHERE e_id = employee.e_id))
     WHERE EXISTS (SELECT 1 FROM employee_skills WHERE e_id = employee.e_id);
 END;
 $$ LANGUAGE plpgsql;
