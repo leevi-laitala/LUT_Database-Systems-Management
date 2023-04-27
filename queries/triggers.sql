@@ -41,5 +41,36 @@ CREATE OR REPLACE TRIGGER trigger_contract
     WHEN (OLD.contract_type IS DISTINCT FROM NEW.contract_type)
     EXECUTE FUNCTION function_contract(); 
 
+
 -- Trigger after insert on employee
--- TO BE ADDED
+CREATE OR REPLACE FUNCTION function_groups()
+RETURNS TRIGGER
+AS $$
+BEGIN
+
+-- If the new employee is HR secretary then the user group is also set to that
+IF NEW.j_id = (SELECT j_id FROM job_title WHERE title = 'HR secretary') THEN
+    INSERT INTO employee_user_group (e_id, u_id) VALUES (NEW.e_id, 6);
+
+-- If the new employee is any of the admins (3) then their user group is the administration group
+ELSIF NEW.j_id = (SELECT j_id FROM job_title WHERE title ='Database admin') THEN
+    INSERT INTO employee_user_group (e_id, u_id) VALUES (NEW.e_id, 3);
+
+ELSIF NEW.j_id = (SELECT j_id FROM job_title WHERE title = 'Data admin') THEN
+    INSERT INTO employee_user_group (e_id, u_id) VALUES (NEW.e_id, 3);
+
+ELSIF NEW.j_id = (SELECT j_id FROM job_title WHERE title = 'System admin') THEN
+    INSERT INTO employee_user_group (e_id, u_id) VALUES (NEW.e_id, 3);
+
+-- All the other employers get the employee user group 
+ELSE
+    INSERT INTO employee_user_group (e_id, u_id) VALUES (NEW.e_id, 9);
+END IF;
+
+RETURN NEW; 
+END; 
+$$ LANGUAGE plpgsql; 
+
+CREATE OR REPLACE TRIGGER trigger_groups
+    AFTER INSERT ON employee FOR EACH ROW
+    EXECUTE FUNCTION function_groups(); 
