@@ -7,7 +7,7 @@ SELECT employee.e_id AS Employee_ID,
 FROM employee
 INNER JOIN employee_skills ON employee.e_id = employee_skills.e_id
 INNER JOIN skills ON employee_skills.s_id = skills.s_id;
-SELECT * FROM view_emp_skill;
+-- SELECT * FROM view_emp_skill;
 
 -- View for listing projects and their roles as well as customer
 CREATE OR REPLACE VIEW view_project_info AS
@@ -20,7 +20,7 @@ SELECT customer.c_name AS Customer_name,
 FROM project
 INNER JOIN customer ON project.c_id = customer.c_id
 ORDER BY project.p_id;
-SELECT * FROM view_project_info;
+-- SELECT * FROM view_project_info;
 
 -- View for listing an employees contract info and job title
 CREATE OR REPLACE VIEW view_job_info AS
@@ -31,7 +31,7 @@ SELECT employee.emp_name,
 FROM employee
 INNER JOIN job_title ON employee.j_id = job_title.j_id
 ORDER BY employee.emp_name;
-SELECT * FROM view_job_info;
+-- SELECT * FROM view_job_info;
 
 -- View for listing headquarters and their geolocation
 CREATE OR REPLACE VIEW view_hq_location AS
@@ -42,7 +42,7 @@ SELECT geo_location.l_id,
     geo_location.country
 FROM headquarters
 INNER JOIN geo_location ON headquarters.l_id = geo_location.l_id;
-SELECT * FROM view_hq_location;
+-- SELECT * FROM view_hq_location;
 
 -- View for listing employee and their user group
 CREATE OR REPLACE VIEW view_emp_usergroup AS 
@@ -54,7 +54,7 @@ FROM employee
 INNER JOIN employee_user_group ON employee.e_id = employee_user_group.e_id
 INNER JOIN user_group ON employee_user_group.u_id = user_group.u_id
 ORDER BY employee.emp_name;
-SELECT * FROM view_emp_usergroup;
+-- SELECT * FROM view_emp_usergroup;
 
 -- View for employees basic info
 CREATE OR REPLACE VIEW view_emp_info AS
@@ -70,5 +70,5 @@ INNER JOIN project_role ON employee.e_id = project_role.e_id
 INNER JOIN project ON project_role.p_id = project.p_id
 INNER JOIN department ON employee.d_id = department.d_id
 ORDER BY employee.e_id;
-SELECT * FROM view_emp_info; 
+-- SELECT * FROM view_emp_info; 
     
