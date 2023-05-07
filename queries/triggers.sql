@@ -14,14 +14,10 @@ CREATE OR REPLACE TRIGGER trigger_skill
     BEFORE INSERT ON skills FOR EACH ROW
     EXECUTE FUNCTION function_skill();
 
--- Trigger after inserting a new project
--- TO BE ADDED
-
 -- Trigger before updating the employee contract type
 CREATE OR REPLACE FUNCTION function_contract()
 RETURNS TRIGGER
-AS $$
-BEGIN 
+AS $$ BEGIN 
 -- Ensuring that the contract start date is set to current date
 NEW.contract_start = CURRENT_DATE; 
 
@@ -74,3 +70,55 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE TRIGGER trigger_groups
     AFTER INSERT ON employee FOR EACH ROW
     EXECUTE FUNCTION function_groups(); 
+
+-- DROP FUNCTION projectWorkers CASCADE;
+
+CREATE FUNCTION projectWorkers() RETURNS TRIGGER AS
+$$
+DECLARE
+    customer_l_id INT;
+    customer_c_id INT;
+    customer_country VARCHAR;
+
+    employee_hq INT;
+    employee_dep INT;
+BEGIN
+    SELECT c_id INTO customer_c_id FROM Project WHERE c_id = NEW.c_id;
+    SELECT l_id INTO customer_l_id FROM Customer WHERE c_id = customer_c_id;
+    SELECT country INTO customer_country FROM Geo_location WHERE l_id = customer_l_id;
+
+    WITH countries AS 
+    (
+        SELECT headquarters.h_id, 
+            headquarters.hq_name, 
+            headquarters.l_id, 
+            geo_location.l_id, 
+            geo_location.street, 
+            geo_location.city, 
+            geo_location.country, 
+            geo_location.zip_code 
+        FROM Headquarters 
+        JOIN Geo_location ON headquarters.l_id = geo_location.l_id
+    )
+
+    SELECT h_id INTO employee_hq FROM Countries WHERE countries.country = customer_country;
+    SELECT d_id INTO employee_dep FROM Department WHERE hid = employee_hq;
+    
+    INSERT INTO Project_role (e_id, p_id, prole_start_date)
+    (
+        SELECT e_id, NEW.p_id, NEW.p_start_date FROM employee 
+            WHERE d_id = employee_dep AND 
+            e_id NOT IN (
+                SELECT e_id FROM Project_role 
+            )
+            LIMIT 3
+    );
+RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER trigger_fetchThreeWorkersForProject
+    AFTER INSERT ON Project 
+    FOR EACH ROW
+        EXECUTE PROCEDURE projectWorkers();
+

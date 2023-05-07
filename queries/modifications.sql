@@ -27,3 +27,9 @@ GRANT SELECT ON view_job_info TO views_only;
 GRANT SELECT ON view_hq_location TO views_only;
 GRANT SELECT ON view_emp_usergroup TO views_only;
 GRANT SELECT ON view_emp_info TO views_only;
+
+ALTER TABLE customer
+ALTER COLUMN email SET NOT NULL;
+
+ALTER TABLE project
+ALTER COLUMN p_start_date SET NOT NULL;

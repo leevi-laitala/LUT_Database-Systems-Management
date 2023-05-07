@@ -65,3 +65,41 @@ $$ LANGUAGE plpgsql;
 -- INNER JOIN employee_skills ON employee.e_id = employee_skills.e_id
 -- INNER JOIN skills ON employee_skills.s_id = skills.s_id
 -- ORDER BY employee.e_id;
+
+-- A function that returns all projects that were ongoing based on the given date
+CREATE OR REPLACE FUNCTION get_running_projects(date DATE)
+RETURNS TABLE (
+    p_id integer, 
+    project_name varchar, 
+    budget numeric, 
+    commission_percentage numeric,
+    p_start_date date, 
+    p_end_date date, 
+    c_id integer, 
+    c_name varchar,
+    c_type varchar,
+    phone varchar,
+    email varchar,
+    l_id integer) AS $$
+BEGIN
+    RETURN QUERY (
+    SELECT project.p_id, 
+        project.project_name, 
+        project.budget, 
+        project.commission_percentage, 
+        project.p_start_date, 
+        project.p_end_date, 
+        project.c_id,
+        customer.c_name,
+        customer.c_type,
+        customer.phone,
+        customer.email,
+        customer.l_id 
+    FROM project
+    INNER JOIN customer
+        ON project.c_id = customer.c_id
+    WHERE project.p_end_date >= date::DATE);
+END;
+$$ LANGUAGE plpgsql;
+
+--SELECT * FROM get_running_projects('2023-01-01');
