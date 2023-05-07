@@ -21,7 +21,7 @@ CREATE TABLE partition_employee_5 PARTITION OF employee_partition
 -- Inserting all the values from the employee table
 INSERT INTO employee_partition SELECT * FROM employee;
 
-SELECT * FROM employee_partition;
+-- SELECT * FROM employee_partition;
 
 -- Creating a copy of a customer table to be partitioned into smaller parts
 CREATE TABLE customer_partition(
@@ -46,5 +46,5 @@ CREATE TABLE partition_customer_5 PARTITION OF customer_partition
 -- Inserting all the values from the customer table
 INSERT INTO customer_partition SELECT * FROM customer;
 
-SELECT * FROM employee_partition;
+-- SELECT * FROM employee_partition;
 
