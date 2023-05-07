@@ -33,3 +33,6 @@ ALTER COLUMN email SET NOT NULL;
 
 ALTER TABLE project
 ALTER COLUMN p_start_date SET NOT NULL;
+
+ALTER TABLE employee 
+ADD CONSTRAINT check_salary CHECK (salary > 1000);

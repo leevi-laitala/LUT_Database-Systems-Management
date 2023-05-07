@@ -7,7 +7,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- CALL procedure_emp_salary();
+CALL procedure_emp_salary();
 -- SELECT salary FROM employee; 
 
 -- Procedure that adds 3 months to all temporary contracts
@@ -20,7 +20,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql; 
 
--- CALL procedure_add_months();
+CALL procedure_add_months();
 -- SELECT contract_type, contract_end FROM employee WHERE contract_type = 'Temporary' ORDER BY contract_end;
 
 -- Procedure that increases salaries by a precentage based on the given precentage
@@ -51,7 +51,7 @@ SELECT salary INTO old_salary FROM employee;
 END;
 $$ LANGUAGE plpgsql;
 
---CALL procedure_calc_salary();
+CALL procedure_calc_salary();
 
 --Tested via the following query:
 -- SELECT employee.e_id,
